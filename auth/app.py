@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 
+from routes.user_route import bp as user_bp
 from utils.my_bcrypt import bcrypt
 
 load_dotenv()
@@ -40,6 +41,9 @@ def my_expired_token_callback(jwt_header, jwt_payload):
 def my_invalid_token_callback(x):
     return jsonify(data=None, error="invalid token"), 422
 
+
+# register router
+app.register_blueprint(user_bp)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)
