@@ -1,0 +1,14 @@
+version: '3.3'
+
+services:
+  auth-api:
+    env_file:
+      - ./auth/.env
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    volumes:
+      - ./persistence_data:/app/db_data
+    restart: always
+    ports:
+      - "8080:8080"
