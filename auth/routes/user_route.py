@@ -63,3 +63,21 @@ profil
 @jwt_required()
 def profil():
     return jsonify(data=get_jwt(), error=None), 200
+
+
+"""
+------------------------------------------------------------------------------
+list
+------------------------------------------------------------------------------
+"""
+
+
+@bp.route('/users', methods=['GET'])
+@jwt_required()
+def find_user():
+    claims = get_jwt()
+    if claims['role'].lower() != 'admin':
+        return jsonify(data=None, error='need user with role admin to access'), 400
+
+    result = user_service.get_all()
+    return jsonify(data=result.data, error=result.error), result.code

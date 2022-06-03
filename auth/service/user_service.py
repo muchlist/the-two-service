@@ -76,3 +76,16 @@ def register(data: User) -> Result:
         error=None,
         code=201
     )
+
+
+def get_all() -> Result:
+    try:
+        users = user_query.get_users()
+    except Exception as err:
+        return Result(data=None, error="failed get data from database " + str(err), code=500)
+
+    return Result(
+        data=users,
+        error=None,
+        code=201
+    )
