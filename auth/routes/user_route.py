@@ -1,5 +1,5 @@
 from dto.user_dto import User
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, render_template, request
 from flask_jwt_extended import get_jwt, jwt_required
 from marshmallow import ValidationError
 from service import user_service
