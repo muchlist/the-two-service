@@ -12,7 +12,6 @@ Jinja2==3.1.2
 MarkupSafe==2.1.1
 marshmallow==3.16.0
 packaging==21.3
-phonenumbers==8.12.49
 pycodestyle==2.8.0
 pycparser==2.21
 PyJWT==2.4.0
