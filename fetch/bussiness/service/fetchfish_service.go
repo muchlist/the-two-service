@@ -11,6 +11,18 @@ type FetchFishServiceAssumer interface {
 	FetchData() ([]model.EFishData, error)
 }
 
+func NewFetchFishServiceAssumer(
+	fishClient repository.FishApiCaller,
+	currClient repository.CurrencyApiCaller,
+	cacheStore repository.CurrencyStorer,
+) FetchFishServiceAssumer {
+	return &FetchService{
+		FishClient: fishClient,
+		CurrClient: currClient,
+		CacheStore: cacheStore,
+	}
+}
+
 type FetchService struct {
 	FishClient repository.FishApiCaller
 	CurrClient repository.CurrencyApiCaller
@@ -26,8 +38,8 @@ func (f *FetchService) FetchData() ([]model.EFishData, error) {
 		return nil, fmt.Errorf("error get fish data: %w", err)
 	}
 
-	// sanitaze fish data (remove data with nil uuid)
-	fishSanitaze := model.EfishDTOList(fishDataList).Sanitize()
+	// sanitaze data, remove item without uuid
+	fishdataFiltered := model.Sanitize(fishDataList)
 
 	// get dollar value to idr from cache
 	usdScale, err := f.CacheStore.GetCurrency(currency)
@@ -39,14 +51,18 @@ func (f *FetchService) FetchData() ([]model.EFishData, error) {
 			if err != nil {
 				return nil, fmt.Errorf("error get currency data: %w", err)
 			}
+			// set cache
+			_ = f.CacheStore.SetCurrency(currency, usdScale)
+		} else {
+			return nil, fmt.Errorf("error get currency data from cache: %w", err)
 		}
 	}
 
 	// insert dollar value to fish data
-	result := make([]model.EFishData, len(fishSanitaze))
-	for i := 0; i > len(fishSanitaze); i++ {
+	result := make([]model.EFishData, 0, len(fishdataFiltered))
+	for _, v := range fishdataFiltered {
 		// To_Domain method fill usd price with scale inputed
-		result[i] = fishSanitaze[i].ToDomain(usdScale)
+		result = append(result, v.ToDomain(usdScale))
 	}
 
 	return result, nil

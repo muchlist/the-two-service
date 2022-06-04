@@ -3,6 +3,8 @@ package app
 import (
 	"fetch-api/app/handler"
 	"fetch-api/app/middleware"
+	"fetch-api/bussiness/repository"
+	"fetch-api/bussiness/service"
 	"fetch-api/conf"
 
 	"github.com/gofiber/fiber/v2"
@@ -22,9 +24,19 @@ func prefareEndpoint(app *fiber.App, cfg conf.Config) {
 	}))
 	jwtMid := middleware.NewJWTMiddleware(cfg.SecretKey)
 
+	// init repository
+	cacheStore := repository.NewCurrencyStorer()
+	currencyClient := repository.NewCurrencyApiCaller(cfg)
+	fishClient := repository.NewFishApiCaller(cfg)
+
+	// init service
+	fishService := service.NewFetchFishServiceAssumer(fishClient, currencyClient, cacheStore)
+
 	// init handler
 	profilHandler := handler.NewProfilHandler()
+	fishHandler := handler.NewFishHandler(fishService)
 
 	// mapping url
 	app.Get("/profile", jwtMid.NormalAuth(), profilHandler.DetailClaims)
+	app.Get("/fish", jwtMid.NormalAuth(), fishHandler.FindFish)
 }
