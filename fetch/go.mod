@@ -6,6 +6,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.34.0
 	github.com/golang-jwt/jwt/v4 v4.4.1
 	github.com/joho/godotenv v1.4.0
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/stretchr/testify v1.7.1
 )
 
