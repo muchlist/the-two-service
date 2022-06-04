@@ -13,7 +13,7 @@ import (
 func RunApp() {
 
 	// load config
-	_ = conf.Load()
+	cfg := conf.Load()
 
 	// create fiber app
 	app := fiber.New()
@@ -27,6 +27,9 @@ func RunApp() {
 		fmt.Println("gracefully shutting down...")
 		_ = app.Shutdown()
 	}()
+
+	// do fullfill dependency and routing
+	prefareEndpoint(app, *cfg)
 
 	// blocking and listen for fiber app
 	if err := app.Listen(":8081"); err != nil {

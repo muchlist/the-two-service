@@ -34,8 +34,9 @@ func (j *JWTMiddleware) NormalAuth(rolesReq ...string) fiber.Handler {
 		authHeader := c.Get(headerKey)
 		claims, err := authRoleValidator(jwtReader, authHeader, rolesReq)
 		if err != nil {
-			return c.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": err, "data": nil})
+			return c.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": err.Error(), "data": nil})
 		}
+
 		c.Locals(mjwt.CLAIMS, claims)
 		return c.Next()
 	}
