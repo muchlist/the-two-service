@@ -13,7 +13,7 @@ type CurrencyStorer interface {
 
 // CurrencyApiCaller used to get recent value of convert scale RP to USD
 type CurrencyApiCaller interface {
-	GetUSDCurrency() (model.CurrencyDTO, error)
+	GetUSDCurrency() (float64, error)
 }
 
 type FishApiCaller interface {

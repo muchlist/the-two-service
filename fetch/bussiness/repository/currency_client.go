@@ -26,10 +26,10 @@ func NewCurrencyApiCaller(config conf.Config) CurrencyApiCaller {
 }
 
 // GetUSDCurrency implements CurrencyApiCaller
-func (c *CurrencyApi) GetUSDCurrency() (model.CurrencyDTO, error) {
+func (c *CurrencyApi) GetUSDCurrency() (float64, error) {
 
 	if c.URL == "" {
-		return model.CurrencyDTO{}, errors.New("url for get usd currency is empty")
+		return 0, errors.New("url for get usd currency is empty")
 	}
 
 	client := resty.New().
@@ -46,14 +46,14 @@ func (c *CurrencyApi) GetUSDCurrency() (model.CurrencyDTO, error) {
 		Get(c.URL)
 
 	if err != nil {
-		return model.CurrencyDTO{}, err
+		return 0, err
 	}
 
 	if resp.StatusCode() != http.StatusOK {
 		if resp.StatusCode() >= 500 {
-			return model.CurrencyDTO{}, fmt.Errorf("%w : %s", ErrInternalServerCurrency, resp.String())
+			return 0, fmt.Errorf("%w : %s", ErrInternalServerCurrency, resp.String())
 		}
-		return model.CurrencyDTO{}, fmt.Errorf("%w : %s", ErrServerCurrency, resp.String())
+		return 0, fmt.Errorf("%w : %s", ErrServerCurrency, resp.String())
 	}
-	return result, nil
+	return result.IDRToUSD, nil
 }

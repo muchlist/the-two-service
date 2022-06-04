@@ -7,6 +7,8 @@ import (
 	"github.com/patrickmn/go-cache"
 )
 
+var ErrCacheNotFound = errors.New("cache not found")
+
 type CurrencyCache struct {
 	Cache *cache.Cache
 }
@@ -29,7 +31,7 @@ func (c *CurrencyCache) GetCurrency(code string) (float64, error) {
 		return value.(float64), nil
 	}
 
-	return 0, errors.New("cache not found")
+	return 0, ErrCacheNotFound
 }
 
 func (c *CurrencyCache) ClearCurrency(code string) error {
