@@ -44,8 +44,8 @@ func (j *JWTMiddleware) NormalAuth(rolesReq ...string) fiber.Handler {
 
 func authRoleValidator(jwtReader mjwt.TokenReader, authHeader string, rolesRequired []string) (mjwt.CustomClaim, error) {
 
-	if !strings.Contains(authHeader, bearerKey) {
-		return mjwt.CustomClaim{}, errors.New("Unauthorized")
+	if !strings.Contains(strings.ToLower(authHeader), strings.ToLower(bearerKey)) {
+		return mjwt.CustomClaim{}, errors.New("unauthorized missing format bearer <token>")
 	}
 
 	tokenString := strings.Split(authHeader, " ")

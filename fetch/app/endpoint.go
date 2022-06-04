@@ -36,6 +36,8 @@ func prefareEndpoint(app *fiber.App, cfg conf.Config) {
 	profilHandler := handler.NewProfilHandler()
 	fishHandler := handler.NewFishHandler(fishService)
 
+	app.Static("/swagger", "./swaggerui")
+
 	// mapping url
 	app.Get("/profile", jwtMid.NormalAuth(), profilHandler.DetailClaims)
 	app.Get("/fish", jwtMid.NormalAuth(), fishHandler.FindFish)
