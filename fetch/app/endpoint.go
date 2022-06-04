@@ -39,4 +39,5 @@ func prefareEndpoint(app *fiber.App, cfg conf.Config) {
 	// mapping url
 	app.Get("/profile", jwtMid.NormalAuth(), profilHandler.DetailClaims)
 	app.Get("/fish", jwtMid.NormalAuth(), fishHandler.FindFish)
+	app.Get("/fish-aggregate", jwtMid.NormalAuth("admin"), fishHandler.FindFishAggregate)
 }

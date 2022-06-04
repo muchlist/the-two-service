@@ -9,6 +9,7 @@ import (
 
 type FetchFishServiceAssumer interface {
 	FetchData() ([]model.EFishData, error)
+	GetAggregatedData() ([]model.AggregationData, error)
 }
 
 func NewFetchFishServiceAssumer(
@@ -66,4 +67,10 @@ func (f *FetchService) FetchData() ([]model.EFishData, error) {
 	}
 
 	return result, nil
+}
+
+// GetAggregatedData will call fetchdata() to get data with same logic
+// then data will be proceced
+func (f *FetchService) GetAggregatedData() ([]model.AggregationData, error) {
+	return nil, nil
 }

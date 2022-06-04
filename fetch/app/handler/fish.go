@@ -32,3 +32,19 @@ func (f *FishHandler) FindFish(c *fiber.Ctx) error {
 		"error": nil,
 	})
 }
+
+func (f *FishHandler) FindFishAggregate(c *fiber.Ctx) error {
+
+	result, err := f.Service.GetAggregatedData()
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"data":  nil,
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"data":  result,
+		"error": nil,
+	})
+}
