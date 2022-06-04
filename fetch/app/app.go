@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fetch-api/conf"
 	"fmt"
 	"log"
 	"os"
@@ -10,6 +11,9 @@ import (
 )
 
 func RunApp() {
+
+	// load config
+	_ = conf.Load()
 
 	// create fiber app
 	app := fiber.New()
