@@ -48,7 +48,11 @@ func RunApp() {
 	prefareEndpoint(app, *cfg)
 
 	// blocking and listen for fiber app
-	if err := app.Listen(":8081"); err != nil {
+	port := "8081"
+	if cfg.ServerPort != "" {
+		port = cfg.ServerPort
+	}
+	if err := app.Listen(fmt.Sprintf(":%s", port)); err != nil {
 		log.Panic()
 	}
 	// cleanup app

@@ -8,6 +8,7 @@ import (
 )
 
 type Config struct {
+	ServerPort  string
 	SecretKey   string
 	CurrencyURL string
 	ResourceURL string
@@ -19,6 +20,7 @@ func Load() *Config {
 	}
 
 	return &Config{
+		ServerPort:  os.Getenv("SERVER_PORT"),
 		SecretKey:   os.Getenv("JWT_SECRET_KEY"),
 		CurrencyURL: os.Getenv("CURRENCY_URL"),
 		ResourceURL: os.Getenv("RESOURCE_URL"),
