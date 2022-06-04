@@ -17,37 +17,38 @@ import (
 
 type EFishDTO struct {
 	UUID        string `json:"uuid"`
-	Commodity   string `json:"commodity"`
-	Province    string `json:"province"`
-	City        string `json:"city"`
+	Commodity   string `json:"komoditas"`
+	Province    string `json:"area_provinsi"`
+	City        string `json:"area_kota"`
 	Size        string `json:"size"`
 	Price       string `json:"price"`
-	TimeParsing string `json:"time_parsing"`
+	TimeParsing string `json:"tgl_parsed"`
 	Timestamp   string `json:"timestamp"`
 }
 
 func (ef *EFishDTO) ToDomain(usdScale float64) EFishData {
-	priceNum := 0.0
-	price := ef.Price
-	if price != "" {
-		p, err := strconv.Atoi(price)
-		if err == nil {
-			priceNum = float64(p)
-		}
+	priceNum, err := strconv.ParseFloat(ef.Price, 64)
+	if err != nil {
+		priceNum = 0
+	}
+
+	sizeNum, err := strconv.ParseFloat(ef.Size, 64)
+	if err != nil {
+		sizeNum = 0
 	}
 
 	priceDollar := priceNum * usdScale
 
 	return EFishData{
-		UUID:        ef.UUID,
-		Commodity:   ef.Commodity,
-		Province:    ef.Province,
-		City:        ef.City,
-		Size:        ef.Size,
-		Price:       priceNum,
-		PriceUSD:    priceDollar,
-		TimeParsing: ef.TimeParsing,
-		Timestamp:   ef.Timestamp,
+		UUID:      ef.UUID,
+		Commodity: ef.Commodity,
+		Province:  ef.Province,
+		City:      ef.City,
+		Size:      sizeNum,
+		Price:     priceNum,
+		PriceUSD:  priceDollar,
+		Time:      ef.TimeParsing,
+		Timestamp: ef.Timestamp,
 	}
 }
 
