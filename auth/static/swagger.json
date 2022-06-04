@@ -1,0 +1,408 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Auth RestAPI",
+    "version": "1.0.0",
+    "description": "API Specs for Auth service",
+    "contact": {
+      "name": "Muchlis",
+      "email": "whois.muchlis@gmail.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "summary": "Register User",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/RegisterResp"
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            },
+            "description": "User created!"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "example": null
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "phone not available"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Entry duplicate!"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "Login User",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/LoginResp"
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            },
+            "description": "User logged in successfully!"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "example": null
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "user or password not valid"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "login failed!"
+          }
+        }
+      }
+    },
+    "/profil": {
+      "get": {
+        "summary": "Get Profile User",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/ProfilResp"
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            },
+            "description": "success!"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "example": null
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "token has expired"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "get profile failed!"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Get Users",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/ListUserResp"
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            },
+            "description": "success!"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "example": null
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "token has expired"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "get profile failed!"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "RegisterReq": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "081288888888"
+          },
+          "name": {
+            "type": "string",
+            "example": "Muchlis"
+          },
+          "role": {
+            "type": "string",
+            "example": "admin"
+          }
+        }
+      },
+      "RegisterResp": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "08128888888"
+          },
+          "message": {
+            "type": "string",
+            "example": "success register phone number"
+          },
+          "password": {
+            "type": "string",
+            "example": "9HxE"
+          }
+        }
+      },
+      "LoginReq": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "081320243880"
+          },
+          "password": {
+            "type": "string",
+            "example": "6fUJ"
+          }
+        }
+      },
+      "LoginResp": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6dHJ1ZSwiaWF0IjoxNjU0MjcwMjExLCJqdGkiOiIxM2I2MmRmZi0zYTkwLTRkMDQtOWZjZS04OGViYjk3YWNjZjEiLCJ0eXBlIjoiYWNjZXNzIiwic3ViIjoiKzgxMjMxODQ3NDEiLCJuYmYiOjE2NTQyNzAyMTEsImV4cCI6MTY1NDI3MTExMSwibmFtZSI6Im1vcmFsYSIsInBob25lIjoiKzgxMjMxODQ3NDEiLCJyb2xlIjoiYWRtaW4iLCJ0aW1lc3RhbXAiOiIyMDIyLTA2LTAzIDE1OjI5OjUxIn0.sY4Ugfxc_sgJpskv_TALq4rhJOPeQPdvEMCVwO-W8h8"
+          },
+          "name": {
+            "type": "string",
+            "example": "Muchlis"
+          },
+          "phone": {
+            "type": "string",
+            "example": "081320243880"
+          },
+          "role": {
+            "type": "string",
+            "example": "admin"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "2022-06-03 15:29:51"
+          }
+        }
+      },
+      "UserResp": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Muchlis"
+          },
+          "phone": {
+            "type": "string",
+            "example": "081320243880"
+          },
+          "role": {
+            "type": "string",
+            "example": "admin"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "2022-06-03 15:29:51"
+          }
+        }
+      },
+      "ListUserResp": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/UserResp"
+        }
+      },
+      "ProfilResp": {
+        "type": "object",
+        "properties": {
+          "exp": {
+            "type": "integer",
+            "example": 1654277168
+          },
+          "iat": {
+            "type": "integer",
+            "example": 1654277168
+          },
+          "nbf": {
+            "type": "integer",
+            "example": 1654277168
+          },
+          "fresh": {
+            "type": "boolean",
+            "example": true
+          },
+          "jti": {
+            "type": "string",
+            "example": "a6bb8482-3a8a-442e-8834-9b5b0eb734aa"
+          },
+          "name": {
+            "type": "string",
+            "example": "Muchlis"
+          },
+          "phone": {
+            "type": "string",
+            "example": "081320243880"
+          },
+          "role": {
+            "type": "string",
+            "example": "admin"
+          },
+          "sub": {
+            "type": "string",
+            "example": "+81231741"
+          },
+          "type": {
+            "type": "string",
+            "example": "access"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "2022-06-03 15:29:51"
+          }
+        }
+      }
+    }
+  }
+}
