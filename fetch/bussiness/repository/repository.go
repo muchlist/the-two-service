@@ -15,3 +15,7 @@ type CurrencyStorer interface {
 type CurrencyApiCaller interface {
 	GetUSDCurrency() (model.CurrencyDTO, error)
 }
+
+type FishApiCaller interface {
+	GetFish() ([]model.EFishDTO, error)
+}
