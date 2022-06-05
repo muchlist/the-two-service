@@ -3,11 +3,29 @@
 Two restfull-api service build with go and python
 
 ## Demo API (online)
-"""Not ready yet"""
+
+- Auth App  : [https://efish-auth.muchlis.dev](https://efish-auth.muchlis.dev)
+- Auth App Swagger  : [https://efish-auth.muchlis.dev/swagger](https://efish-auth.muchlis.dev/swagger)
+
+
+- Fetch App  : [https://efish-fetch.muchlis.dev](https://efish-fetch.muchlis.dev)
+- Fetch App Swagger  : [https://efish-fetch.muchlis.dev/swagger](https://efish-fetch.muchlis.dev/swagger)  
+
+`(pada swagger jangan lupa untuk melihat pilihan servers)`
+  
+
 
 
 ## Installation
 
+### - Install with only docker-compose
+Copy `docker-compose-zero.yml` to local machine
+Run docker compose with custom filename (or can just rename it) 
+```bash
+docker-compose -f docker-compose-zero.yml up
+```
+
+### - Install with clone repository
 Clone this project
 
 ```bash
@@ -58,7 +76,7 @@ Swagger file :
 ## Goals
 
 - [x]  Servers bisa dinyalakan di port berbeda
-- [x]  Semua endpoint berfungsi dengan semestinya (3 endpoint auth, 3 endpoint fetch)
+- [x]  Semua endpoint berfungsi dengan semestinya (4 endpoint auth, 3 endpoint fetch)
 - [x]  Dokumentasi endpoint dengan format OpenAPI (API.md)
 - [x]  Dokumentasi system diagram-nya dalam format C4 Model (Context, container, component)
 - [x]  Pergunakan satu repo git untuk semua apps (mono repo)
@@ -67,7 +85,7 @@ Swagger file :
 
 ## Additional Goals
 
-- [ ]  Deployed ke Host/Penyedia Layanan (semacam surge, heroku, vercel, firebase, glitch,
+- [x]  Deployed ke Host/Penyedia Layanan (semacam surge, heroku, vercel, firebase, glitch,
 host anda pribadi)
 - [x]  Docker Compose
 - [ ]  Unit Testing

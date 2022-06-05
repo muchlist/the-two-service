@@ -1,0 +1,19 @@
+version: '3.3'
+
+services:
+  auth-api:
+    image: meretasdev/auth-api:1.0.1
+    # volumes:
+    #   - ./db_data:/app/db_data
+    restart: always
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+  fetch-api:
+    image: meretasdev/fetch-api:1.0.1
+    restart: always
+    ports:
+      - "8081:8081"
+    expose:
+      - "8081"

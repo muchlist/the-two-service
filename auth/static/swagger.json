@@ -13,6 +13,10 @@
     {
       "url": "http://localhost:8080",
       "description": "Local"
+    },
+    {
+      "url": "https://efish-auth.muchlis.dev",
+      "description": "Remote"
     }
   ],
   "paths": {
