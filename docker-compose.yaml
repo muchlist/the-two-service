@@ -12,3 +12,12 @@ services:
     restart: always
     ports:
       - "8080:8080"
+  fetch-api:
+    env_file:
+      - ./fetch/.env
+    build:
+      context: ./fetch
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8081:8081"
