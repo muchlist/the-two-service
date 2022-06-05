@@ -1,0 +1,355 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Fetch RestAPI",
+      "version": "1.0.0",
+      "description": "API Specs for Fetch service",
+      "contact": {
+        "name": "Muchlis",
+        "email": "whois.muchlis@gmail.com"
+      }
+    },
+    "servers": [
+      {
+        "url": "http://localhost:8081",
+        "description": "Local"
+      }
+    ],
+    "paths": {
+      "/profile": {
+        "get": {
+          "summary": "Read Claims",
+          "security": [
+            {
+              "Bearer": []
+            }
+          ],
+          "tags": [
+            "Fetch"
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "$ref": "#/components/schemas/ClaimsResp"
+                      },
+                      "error": {
+                        "type": "object",
+                        "example": null
+                      }
+                    }
+                  }
+                }
+              },
+              "description": "User created!"
+            },
+            "401": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "example": null
+                      },
+                      "error": {
+                        "type": "string",
+                        "example": "token not valid"
+                      }
+                    }
+                  }
+                }
+              },
+              "description": "get profile failed!"
+            }
+          }
+        }
+      },
+      "/fish": {
+        "get": {
+          "summary": "Fetch fish data",
+          "security": [
+            {
+              "Bearer": []
+            }
+          ],
+          "tags": [
+            "Fetch"
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "$ref": "#/components/schemas/FetchResponse"
+                      },
+                      "error": {
+                        "type": "object",
+                        "example": null
+                      }
+                    }
+                  }
+                }
+              },
+              "description": "fetch fish data success!"
+            },
+            "401": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "example": null
+                      },
+                      "error": {
+                        "type": "string",
+                        "example": "token not valid"
+                      }
+                    }
+                  }
+                }
+              },
+              "description": "login failed!"
+            }
+          }
+        }
+      },
+      "/fish-aggregate": {
+        "get": {
+          "summary": "Fetch fish data",
+          "security": [
+            {
+              "Bearer": []
+            }
+          ],
+          "tags": [
+            "Fetch"
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "$ref": "#/components/schemas/AggrResponse"
+                      },
+                      "error": {
+                        "type": "object",
+                        "example": null
+                      }
+                    }
+                  }
+                }
+              },
+              "description": "Aggregator data success!"
+            },
+            "401": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "example": null
+                      },
+                      "error": {
+                        "type": "string",
+                        "example": "token not valid"
+                      }
+                    }
+                  }
+                }
+              },
+              "description": "login failed!"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "securitySchemes": {
+        "Bearer": {
+          "type": "http",
+          "scheme": "Bearer"
+        }
+      },
+      "schemas": {
+        "FetchResponse": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uuid": {
+                "type": "string",
+                "example": "10799adf-5284-456a-b6be-fb43e0113251"
+              },
+              "commodity": {
+                "type": "string",
+                "example": "Haruan"
+              },
+              "province": {
+                "type": "string",
+                "example": "KALIMANTAN SELATAN"
+              },
+              "city": {
+                "type": "string",
+                "example": "BANJARMASIN"
+              },
+              "size": {
+                "type": "number",
+                "example": 120
+              },
+              "price": {
+                "type": "number",
+                "example": 200000
+              },
+              "price_usd": {
+                "type": "number",
+                "example": 12.12312
+              },
+              "time_parsing": {
+                "type": "string",
+                "example": "2022/05/16 23:35:55"
+              },
+              "timestamp": {
+                "type": "string",
+                "example": null
+              }
+            }
+          }
+        },
+        "ClaimsResp": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "Muchlis"
+            },
+            "phone": {
+              "type": "string",
+              "example": "081320243880"
+            },
+            "role": {
+              "type": "string",
+              "example": "admin"
+            },
+            "timestamp": {
+              "type": "string",
+              "example": "2022-06-03 15:29:51"
+            },
+            "type": {
+              "type": "string",
+              "example": "Access"
+            },
+            "exp": {
+              "type": "number",
+              "example": 9999999999
+            },
+            "fresh": {
+              "type": "boolean",
+              "example": true
+            }
+          }
+        },"AggrResponse": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "year": {
+                "type": "integer",
+                "example": 2022
+              },
+              "week": {
+                "type": "integer",
+                "example": 2
+              },
+              "province": {
+                "type": "string",
+                "example": "KALIMANTAN TIMUR"
+              },
+              "count": {
+                "type": "integer",
+                "example": 2
+              },
+              "compute": {
+                "type": "object",
+                "properties": {
+                  "maximal": {
+                    "type": "integer",
+                    "example": 12
+                  },
+                  "minimal": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "median": {
+                    "type": "integer",
+                    "example": 10
+                  },
+                  "average": {
+                    "type": "integer",
+                    "example": 6
+                  }
+                }
+              },
+              "price": {
+                "type": "object",
+                "properties": {
+                  "maximal": {
+                    "type": "integer",
+                    "example": 12
+                  },
+                  "minimal": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "median": {
+                    "type": "integer",
+                    "example": 10
+                  },
+                  "average": {
+                    "type": "integer",
+                    "example": 6
+                  }
+                }
+              },
+              "price_usd": {
+                "type": "object",
+                "properties": {
+                  "maximal": {
+                    "type": "integer",
+                    "example": 12
+                  },
+                  "minimal": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "median": {
+                    "type": "integer",
+                    "example": 10
+                  },
+                  "average": {
+                    "type": "integer",
+                    "example": 6
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
