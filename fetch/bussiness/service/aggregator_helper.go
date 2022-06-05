@@ -5,6 +5,7 @@ import (
 	"fetch-api/pkg/conv"
 	"fetch-api/pkg/slicer"
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -87,8 +88,19 @@ func Aggregate(dataList []model.EFishData) []model.AggregationData {
 				Average: averagePriceUsd,
 			},
 		})
-
 	}
+
+	// Sort result
+	sort.Slice(result, func(i, j int) bool {
+		// sort by province and year and week
+		if result[i].Province != result[j].Province {
+			return result[i].Province < result[j].Province
+		}
+		if result[i].Year != result[j].Year {
+			return result[i].Year < result[j].Year
+		}
+		return result[i].Week < result[j].Week
+	})
 
 	return result
 }
