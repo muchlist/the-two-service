@@ -68,6 +68,17 @@ Swagger file :
 ![component](https://github.com/muchlist/the-two-service/blob/main/static/component.png)
 
 
+## Unit Test
+![unittest](https://github.com/muchlist/the-two-service/blob/main/static/unittestcoverage.png)
+
+unit test in service layer
+```
+ok      fetch-api/bussiness/service     0.006s  coverage: 90.5% of statements
+ok      fetch-api/pkg/conv      0.003s  coverage: 100.0% of statements
+ok      fetch-api/pkg/mjwt      0.004s  coverage: 72.1% of statements
+ok      fetch-api/pkg/slicer    0.002s  coverage: 87.9% of statements
+```
+
 ## Authors
 
 - [Muchlis - @muchlist](https://github.com/muchlist)
@@ -88,7 +99,7 @@ Swagger file :
 - [x]  Deployed ke Host/Penyedia Layanan (semacam surge, heroku, vercel, firebase, glitch,
 host anda pribadi)
 - [x]  Docker Compose
-- [ ]  Unit Testing
+- [x]  Unit Testing
 
 ## Warning
 - All credential file exposed to make it easier in terms of testing. In Prod we need to gitignore or just change name of .env file.

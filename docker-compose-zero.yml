@@ -11,7 +11,7 @@ services:
     expose:
       - "8080"
   fetch-api:
-    image: meretasdev/fetch-api:1.0.1
+    image: meretasdev/fetch-api:1.0.2
     restart: always
     ports:
       - "8081:8081"

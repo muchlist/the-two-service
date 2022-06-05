@@ -1,7 +1,5 @@
 package mjwt
 
-import "strings"
-
 // {
 // 	"fresh": true,
 // 	"iat": 1654303970,
@@ -25,12 +23,4 @@ type CustomClaim struct {
 	Exp       int64  `json:"exp"`
 	Type      string `json:"type"`
 	Fresh     bool   `json:"fresh"`
-}
-
-func (c CustomClaim) IsAdmin() bool {
-	return strings.ToLower(c.Role) == "admin"
-}
-
-func (c CustomClaim) IsFresh() bool {
-	return c.Fresh
 }
