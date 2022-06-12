@@ -4,11 +4,14 @@ import (
 	"fetch-api/conf"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 
 	"github.com/gofiber/fiber/v2"
 )
+
+const version = "1.0.0"
 
 func RunApp() {
 
@@ -34,6 +37,21 @@ func RunApp() {
 		},
 	)
 
+	// start debug server
+	debugPort := "4000"
+	if cfg.DebugPort != "" {
+		debugPort = cfg.DebugPort
+	}
+	debugMux := debugMux()
+	go func(mux *http.ServeMux) {
+		if err := http.ListenAndServe(fmt.Sprintf("0.0.0.0:%v", debugPort), mux); err != nil {
+			log.Print("serve debug api", err)
+		}
+	}(debugMux)
+
+	// do fullfill dependency and routing
+	prefareEndpoint(app, *cfg)
+
 	// gracefully shutdown
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
@@ -43,9 +61,6 @@ func RunApp() {
 		fmt.Println("gracefully shutting down...")
 		_ = app.Shutdown()
 	}()
-
-	// do fullfill dependency and routing
-	prefareEndpoint(app, *cfg)
 
 	// blocking and listen for fiber app
 	port := "8081"
