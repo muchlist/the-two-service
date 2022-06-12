@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fetch-api/bussiness/model"
 	"fetch-api/bussiness/repository"
+	expvarcollector "fetch-api/pkg/expvar_collector"
 	"fmt"
 )
 
@@ -46,6 +47,8 @@ func (f *FetchService) FetchData() ([]model.EFishData, error) {
 	usdScale, err := f.CacheStore.GetCurrency(currency)
 	if err != nil {
 		if errors.Is(repository.ErrCacheNotFound, err) {
+			// cache miss
+			expvarcollector.AddCurrencyMiss()
 
 			// get from currency api
 			usdScale, err = f.CurrClient.GetUSDCurrency()
@@ -57,6 +60,9 @@ func (f *FetchService) FetchData() ([]model.EFishData, error) {
 		} else {
 			return nil, fmt.Errorf("error get currency data from cache: %w", err)
 		}
+	} else {
+		// cache hit
+		expvarcollector.AddCurrencyHit()
 	}
 
 	// insert dollar value to fish data
