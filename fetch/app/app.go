@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/afex/hystrix-go/hystrix"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -17,6 +18,23 @@ func RunApp() {
 
 	// load config
 	cfg := conf.Load()
+
+	// init hystrix
+	hystrix.ConfigureCommand("get_currency", hystrix.CommandConfig{
+		Timeout:                10000,
+		RequestVolumeThreshold: 1,
+		MaxConcurrentRequests:  100,
+		ErrorPercentThreshold:  50,
+		SleepWindow:            20000,
+	})
+
+	hystrix.ConfigureCommand("get_fish", hystrix.CommandConfig{
+		Timeout:                20000,
+		RequestVolumeThreshold: 2,
+		MaxConcurrentRequests:  100,
+		ErrorPercentThreshold:  50,
+		SleepWindow:            20000,
+	})
 
 	// create fiber app
 	app := fiber.New(

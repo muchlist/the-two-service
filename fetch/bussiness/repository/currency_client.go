@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/afex/hystrix-go/hystrix"
 	"github.com/go-resty/resty/v2"
 )
 
@@ -32,28 +33,46 @@ func (c *CurrencyApi) GetUSDCurrency() (float64, error) {
 		return 0, errors.New("url for get usd currency is empty")
 	}
 
-	client := resty.New().
-		SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true}).
-		SetTimeout(10*time.Second).
-		SetHeader("Accept", "application/json").
-		SetRetryCount(2).
-		SetRetryWaitTime(1 * time.Second)
+	// DO in Hystrix Circuit Breaker
+	output := make(chan float64, 1)
+	userErr := make(chan error, 1)
+	errors := hystrix.Go("get_currency", func() error {
 
-	var result model.CurrencyDTO
+		// call http rest
+		client := resty.New().
+			SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true}).
+			SetTimeout(10*time.Second).
+			SetHeader("Accept", "application/json")
 
-	resp, err := client.R().
-		SetResult(&result).
-		Get(c.URL)
+		var result model.CurrencyDTO
 
-	if err != nil {
+		resp, err := client.R().
+			SetResult(&result).
+			Get(c.URL)
+
+		if err != nil {
+			return err
+		}
+
+		if resp.StatusCode() != http.StatusOK {
+			if resp.StatusCode() >= 500 {
+				return fmt.Errorf("%w : %s", ErrInternalServerCurrency, resp.String())
+			}
+			// if not err 500, it is user error
+			userErr <- fmt.Errorf("%w : %s", ErrServerCurrency, resp.String())
+			return nil
+		}
+
+		output <- result.IDRToUSD
+		return nil
+	}, nil)
+
+	select {
+	case out := <-output:
+		return out, nil
+	case err := <-errors:
+		return 0, err
+	case err := <-userErr:
 		return 0, err
 	}
-
-	if resp.StatusCode() != http.StatusOK {
-		if resp.StatusCode() >= 500 {
-			return 0, fmt.Errorf("%w : %s", ErrInternalServerCurrency, resp.String())
-		}
-		return 0, fmt.Errorf("%w : %s", ErrServerCurrency, resp.String())
-	}
-	return result.IDRToUSD, nil
 }

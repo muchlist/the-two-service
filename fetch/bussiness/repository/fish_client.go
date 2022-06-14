@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/afex/hystrix-go/hystrix"
 	"github.com/go-resty/resty/v2"
 )
 
@@ -32,28 +33,46 @@ func (c *FishApi) GetFish() ([]model.EFishDTO, error) {
 		return nil, errors.New("url for getting fish data is empty")
 	}
 
-	client := resty.New().
-		SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true}).
-		SetTimeout(10*time.Second).
-		SetHeader("Accept", "application/json").
-		SetRetryCount(2).
-		SetRetryWaitTime(1 * time.Second)
+	// DO in Hystrix Circuit Breaker
+	output := make(chan []model.EFishDTO, 1)
+	userErr := make(chan error, 1)
+	errors := hystrix.Go("get_fish", func() error {
 
-	var result []model.EFishDTO
+		// call http rest
+		client := resty.New().
+			SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true}).
+			SetTimeout(10*time.Second).
+			SetHeader("Accept", "application/json")
 
-	resp, err := client.R().
-		SetResult(&result).
-		Get(c.URL)
+		var result []model.EFishDTO
 
-	if err != nil {
+		resp, err := client.R().
+			SetResult(&result).
+			Get(c.URL)
+
+		if err != nil {
+			return err
+		}
+
+		if resp.StatusCode() != http.StatusOK {
+			if resp.StatusCode() >= 500 {
+				return fmt.Errorf("%w : %s", ErrInternalServerFish, resp.String())
+			}
+			// if not err 500, it is user error
+			userErr <- fmt.Errorf("%w : %s", ErrServerFish, resp.String())
+			return nil
+		}
+		output <- result
+		return nil
+	}, nil)
+
+	select {
+	case out := <-output:
+		return out, nil
+	case err := <-errors:
+		return nil, err
+	case err := <-userErr:
 		return nil, err
 	}
 
-	if resp.StatusCode() != http.StatusOK {
-		if resp.StatusCode() >= 500 {
-			return nil, fmt.Errorf("%w : %s", ErrInternalServerFish, resp.String())
-		}
-		return nil, fmt.Errorf("%w : %s", ErrServerFish, resp.String())
-	}
-	return result, nil
 }
