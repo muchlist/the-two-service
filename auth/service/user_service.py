@@ -84,6 +84,10 @@ def get_all() -> Result:
     except Exception as err:
         return Result(data=None, error="failed get data from database " + str(err), code=500)
 
+    # TODO : Hide password
+    # for u in users:
+    #     u.pop('password')
+
     return Result(
         data=users,
         error=None,
