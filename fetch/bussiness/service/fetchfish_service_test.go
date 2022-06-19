@@ -4,6 +4,7 @@ import (
 	"fetch-api/bussiness/model"
 	"fetch-api/bussiness/repository"
 	"fetch-api/bussiness/service/mockserv"
+	"fetch-api/conf"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -77,7 +78,15 @@ func TestFetchData_Success(t *testing.T) {
 	rc.On(mockserv.GetCurrency, "USD").Return(0.0, repository.ErrCacheNotFound)
 	rc.On(mockserv.SetCurrency, "USD", 0.5).Return(nil)
 
-	fetchService := NewFetchFishServiceAssumer(fc, cc, rc)
+	// fake config
+	cfg := conf.Config{}
+
+	// cache fish mock
+	fcache := new(mockserv.CacheFishMock)
+	fcache.On(mockserv.GetFishC, cfg.ResourceURL).Return(nil, repository.ErrCacheNotFound)
+	fcache.On(mockserv.SetFish, cfg.ResourceURL, tests.input).Return(nil)
+
+	fetchService := NewFetchFishServiceAssumer(cfg, fc, cc, rc, fcache)
 
 	got, err := fetchService.FetchData()
 
@@ -155,7 +164,15 @@ func TestFetchData_CachedCurrency(t *testing.T) {
 	// not called because cache hit
 	// rc.On(mockserv.SetCurrency, "USD", 0.5).Return(nil)
 
-	fetchService := NewFetchFishServiceAssumer(fc, cc, rc)
+	// fake config
+	cfg := conf.Config{}
+
+	// cache fish mock
+	fcache := new(mockserv.CacheFishMock)
+	fcache.On(mockserv.GetFishC, "").Return(nil, repository.ErrCacheNotFound)
+	fcache.On(mockserv.SetFish, "", tests.input).Return(nil)
+
+	fetchService := NewFetchFishServiceAssumer(cfg, fc, cc, rc, fcache)
 
 	got, err := fetchService.FetchData()
 
@@ -236,7 +253,15 @@ func TestAggregateData_Success(t *testing.T) {
 	rc.On(mockserv.GetCurrency, "USD").Return(0.0, repository.ErrCacheNotFound)
 	rc.On(mockserv.SetCurrency, "USD", 0.5).Return(nil)
 
-	fetchService := NewFetchFishServiceAssumer(fc, cc, rc)
+	// fake config
+	cfg := conf.Config{}
+
+	// cache fish mock
+	fcache := new(mockserv.CacheFishMock)
+	fcache.On(mockserv.GetFishC, cfg.ResourceURL).Return(nil, repository.ErrCacheNotFound)
+	fcache.On(mockserv.SetFish, cfg.ResourceURL, tests.rawData).Return(nil)
+
+	fetchService := NewFetchFishServiceAssumer(cfg, fc, cc, rc, fcache)
 
 	got, err := fetchService.GetAggregatedData()
 

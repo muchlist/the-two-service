@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fetch-api/bussiness/model"
 	"fetch-api/bussiness/repository"
+	"fetch-api/conf"
 	expvarcollector "fetch-api/pkg/expvar_collector"
 	"fmt"
 )
@@ -14,30 +15,52 @@ type FetchFishServiceAssumer interface {
 }
 
 func NewFetchFishServiceAssumer(
+	cfg conf.Config,
 	fishClient repository.FishApiCaller,
 	currClient repository.CurrencyApiCaller,
 	cacheStore repository.CurrencyStorer,
+	cacheFishStore repository.FishStorer,
 ) FetchFishServiceAssumer {
 	return &FetchService{
-		FishClient: fishClient,
-		CurrClient: currClient,
-		CacheStore: cacheStore,
+		FishClient:     fishClient,
+		CurrClient:     currClient,
+		CacheStore:     cacheStore,
+		CacheFishStore: cacheFishStore,
 	}
 }
 
 type FetchService struct {
-	FishClient repository.FishApiCaller
-	CurrClient repository.CurrencyApiCaller
-	CacheStore repository.CurrencyStorer
+	Cfg            conf.Config
+	FishClient     repository.FishApiCaller
+	CurrClient     repository.CurrencyApiCaller
+	CacheStore     repository.CurrencyStorer
+	CacheFishStore repository.FishStorer
 }
 
 const currency = "USD"
 
 func (f *FetchService) FetchData() ([]model.EFishData, error) {
-	// get all fish commodity data
-	fishDataList, err := f.FishClient.GetFish()
+	// get all fish commodity data from cache then if not exist
+	// get from call api
+	fishDataList, err := f.CacheFishStore.GetFish(f.Cfg.ResourceURL)
 	if err != nil {
-		return nil, fmt.Errorf("error get fish data: %w", err)
+		if errors.Is(repository.ErrCacheNotFound, err) {
+			// cache miss
+			expvarcollector.AddFishMiss()
+
+			// get from fish api
+			fishDataList, err = f.FishClient.GetFish()
+			if err != nil {
+				return nil, fmt.Errorf("error get fish data: %w", err)
+			}
+			// set cache
+			_ = f.CacheFishStore.SetFish(f.Cfg.ResourceURL, fishDataList)
+		} else {
+			return nil, fmt.Errorf("error get fish data from cache: %w", err)
+		}
+	} else {
+		// cache hit
+		expvarcollector.AddFishHit()
 	}
 
 	// sanitaze data, remove item without uuid

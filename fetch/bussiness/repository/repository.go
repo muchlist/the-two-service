@@ -11,6 +11,13 @@ type CurrencyStorer interface {
 	ClearCurrency(code string) error
 }
 
+// FishStorer used to cache fish data
+type FishStorer interface {
+	SetFish(url string, value []model.EFishDTO) error
+	GetFish(url string) ([]model.EFishDTO, error)
+	ClearFish(url string) error
+}
+
 // CurrencyApiCaller used to get recent value of convert scale RP to USD
 type CurrencyApiCaller interface {
 	GetUSDCurrency() (float64, error)

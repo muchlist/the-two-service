@@ -18,7 +18,6 @@ type FishHandler struct {
 }
 
 func (f *FishHandler) FindFish(c *fiber.Ctx) error {
-
 	result, err := f.Service.FetchData()
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{

@@ -26,11 +26,12 @@ func prefareEndpoint(app *fiber.App, cfg conf.Config) {
 
 	// init repository
 	cacheStore := repository.NewCurrencyStorer()
+	cacheFishStore := repository.NewFishStorer()
 	currencyClient := repository.NewCurrencyApiCaller(cfg)
 	fishClient := repository.NewFishApiCaller(cfg)
 
 	// init service
-	fishService := service.NewFetchFishServiceAssumer(fishClient, currencyClient, cacheStore)
+	fishService := service.NewFetchFishServiceAssumer(cfg, fishClient, currencyClient, cacheStore, cacheFishStore)
 
 	// init handler
 	profilHandler := handler.NewProfilHandler()
