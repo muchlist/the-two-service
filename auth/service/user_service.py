@@ -52,6 +52,10 @@ def login(phone: str, password: str) -> Result:
 
 
 def register(data: User) -> Result:
+    # check is user exist
+    if user_exist(data.phone):
+        return Result(data=None, error="phone not available", code=400)
+    
     # generate password
     pw_generated = password_gen.generate_password()
 
@@ -59,9 +63,6 @@ def register(data: User) -> Result:
     pw_hash = bcrypt.generate_password_hash(pw_generated).decode("utf-8")
     data.password = pw_hash
 
-    # check is user exist
-    if user_exist(data.phone):
-        return Result(data=None, error="phone not available", code=400)
 
     try:
         user_update.insert_user(data)
@@ -84,7 +85,7 @@ def get_all() -> Result:
     except Exception as err:
         return Result(data=None, error="failed get data from database " + str(err), code=500)
 
-    # TODO : Hide password
+    # TODO : Hide password (or, better in database query)
     # for u in users:
     #     u.pop('password')
 
